@@ -20,8 +20,14 @@ $.Tabs.prototype.clickTab = function(event){
   event.preventDefault;
   this.$el.find('a').removeClass("active");
   this.$activeTab.removeClass("active");
-  var $clickedLink = $(event.currentTarget);
-  $clickedLink.addClass('active');
-  var contentId = $clickedLink.attr('href');
-  this.$activeTab = this.$contentTabs.find(contentId).addClass('active');
+  this.$activeTab.addClass("transitioning").one("transitionend", function(){
+    this.$activeTab.removeClass("transitioning");
+    var $clickedLink = $(event.currentTarget);
+    $clickedLink.addClass('active');
+    var contentId = $clickedLink.attr('href');
+    this.$activeTab = this.$contentTabs.find(contentId).addClass('active transitioning');
+    setTimeout(function() {
+      this.$activeTab.removeClass('transitioning');
+    }.bind(this), 0);
+  }.bind(this));
 };
